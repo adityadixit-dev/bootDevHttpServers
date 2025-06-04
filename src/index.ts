@@ -1,8 +1,8 @@
 import express from "express";
 
 import { handlerReadiness } from "./api/readiness.js";
-import { handlerHits } from "./api/hits.js";
-import { handlerReset } from "./api/reset.js";
+import { handlerHits } from "./admin/hits.js";
+import { handlerReset } from "./admin/reset.js";
 
 import { middlewareLogResponses } from "./middleware/log_responses.js";
 import { middlewareMetricsInc } from "./middleware/metrics_inc.js";
@@ -16,8 +16,9 @@ app.use("/app", middlewareMetricsInc);
 app.use("/app", express.static("./src/app"));
 
 app.get("/api/healthz", handlerReadiness);
-app.get("/api/metrics", handlerHits);
-app.get("/api/reset", handlerReset);
+
+app.get("/admin/metrics", handlerHits);
+app.get("/admin/reset", handlerReset);
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
