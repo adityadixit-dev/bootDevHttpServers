@@ -10,8 +10,8 @@ export const handlerValidateChirp = async (req: Request, res: Response) => {
     return;
   }
 
-  if (isChirpTooLong(params, res)) {
-    return;
+  if (isChirpTooLong(params)) {
+    throw new Error("Chirp is too long");
   }
 
   const cleanedBody: string = cleanInputBody(params.body);
@@ -37,10 +37,10 @@ function cleanInputBody(bodyStr: string) {
   return cleanedMessage.join(" ");
 }
 
-function isChirpTooLong(params: Parameters, res: Response) {
+function isChirpTooLong(params: Parameters) {
   const maxChirpLength = 140;
   if (params.body.length > maxChirpLength) {
-    respondWithError(res, 400, "Chirp is too long");
+    // respondWithError(res, 400, "Chirp is too long");
     return true;
   }
   return false;
