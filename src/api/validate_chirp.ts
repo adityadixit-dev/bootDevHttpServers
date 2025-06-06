@@ -1,17 +1,20 @@
 import { Request, Response } from "express";
 import { respondWithError, respondWithJSON } from "../utils/json_resp.js";
+import { BadRequestError } from "../middleware/error_handling.js";
 
 type Parameters = { body: string };
+
+const MAX_CHIRP_LENGTH = 140;
 
 export const handlerValidateChirp = async (req: Request, res: Response) => {
   const params: Parameters = req.body;
 
-  if (isBodyUndefined(params, res)) {
-    return;
+  if (isBodyUndefined(params)) {
+    throw new BadRequestError("Body of the message is not valid");
   }
 
   if (isChirpTooLong(params)) {
-    throw new Error("Chirp is too long");
+    throw new BadRequestError(`Chirp is too long. Max length is ${MAX_CHIRP_LENGTH}`);
   }
 
   const cleanedBody: string = cleanInputBody(params.body);
@@ -38,17 +41,15 @@ function cleanInputBody(bodyStr: string) {
 }
 
 function isChirpTooLong(params: Parameters) {
-  const maxChirpLength = 140;
-  if (params.body.length > maxChirpLength) {
+  if (params.body.length > MAX_CHIRP_LENGTH) {
     // respondWithError(res, 400, "Chirp is too long");
     return true;
   }
   return false;
 }
 
-function isBodyUndefined(params: Parameters, res: Response) {
+function isBodyUndefined(params: Parameters) {
   if (!params.body || typeof params.body !== "string") {
-    respondWithError(res, 400, "Invalid Request body missing or body type is wrong");
     return true;
   }
   return false;
