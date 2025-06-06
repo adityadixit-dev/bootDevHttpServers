@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { config } from "../config.js";
+import { config, resetHitsInConfig } from "../config.js";
 
 export const handlerReset = async (_req: Request, res: Response) => {
-  config.fileserverHits = 0;
+  resetHitsInConfig();
   res
     .status(200)
     .set({
