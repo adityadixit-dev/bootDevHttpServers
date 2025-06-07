@@ -30,7 +30,7 @@ export async function handlerCreateChirp(req: Request, res: Response) {
   });
 
   if (result) {
-    console.log(result);
+    // console.log(result);
     respondWithJSON(res, 201, result);
     return;
   }

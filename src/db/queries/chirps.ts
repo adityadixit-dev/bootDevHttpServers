@@ -1,6 +1,8 @@
 import { db } from "../index.js";
 import { chirps } from "../schema.js";
 import type { NewChirp } from "../schema.js";
+import { config } from "../../config.js";
+import { ForbiddenError } from "../../middleware/error_handling.js";
 
 export async function createChirp(chirp: NewChirp) {
   console.log(`Body: ${chirp.body}\n${chirp.userId}`);
@@ -18,5 +20,24 @@ export async function createChirp(chirp: NewChirp) {
     const errMsg = `Error Creating Chirp: ${(err as Error).message}`;
     console.log(errMsg);
     throw new Error(errMsg);
+  }
+}
+
+export async function getAllChirps() {
+  try {
+    const results = await db.select().from(chirps).orderBy(chirps.createdAt);
+    return results;
+  } catch (err) {
+    const errMsg = `Error Getting All Chirps: ${(err as Error).message}`;
+    console.log(errMsg);
+    throw new Error(errMsg);
+  }
+}
+
+export async function resetAllChirps() {
+  if (config.api.platform === "dev") {
+    await db.delete(chirps);
+  } else {
+    throw new ForbiddenError("Unable to reset outside of Dev Env");
   }
 }

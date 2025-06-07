@@ -4,6 +4,7 @@ import { resetUsers } from "../db/queries/users.js";
 
 export const handlerReset = async (_req: Request, res: Response) => {
   await resetUsers();
+  // No need to actually delete all chirps since cascade is set
   resetHitsInConfig();
 
   res
