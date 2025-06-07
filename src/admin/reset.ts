@@ -1,8 +1,11 @@
 import { Request, Response } from "express";
-import { config, resetHitsInConfig } from "../config.js";
+import { resetHitsInConfig } from "../config.js";
+import { resetUsers } from "../db/queries/users.js";
 
 export const handlerReset = async (_req: Request, res: Response) => {
+  await resetUsers();
   resetHitsInConfig();
+
   res
     .status(200)
     .set({

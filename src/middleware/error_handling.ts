@@ -44,6 +44,8 @@ function getCustomError(err: Error) {
   return result;
 }
 
+// TODO: Each Class can have its own status code and Default message
+
 export class BadRequestError extends Error {
   constructor(message: string) {
     super(message);

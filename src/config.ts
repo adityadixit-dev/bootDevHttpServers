@@ -9,6 +9,7 @@ type Config = {
 type APIConfig = {
   fileserverHits: number;
   port: number;
+  platform: "dev" | "prod";
 };
 
 type DBConfig = {
@@ -24,6 +25,7 @@ export const config: Config = {
   api: {
     fileserverHits: 0,
     port: Number(envOrThrow("PORT")),
+    platform: devProdOrThrow("PLATFORM"),
   },
   db: {
     dbURL: envOrThrow("DB_URL"),
@@ -50,4 +52,13 @@ function envOrThrow(key: string): string {
   }
 
   return val;
+}
+
+function devProdOrThrow(key: string): "dev" | "prod" {
+  const val = envOrThrow(key);
+  if (val === "dev" || val === "prod") {
+    return val;
+  }
+
+  throw new Error("PLATFORM must be dev or prod");
 }
