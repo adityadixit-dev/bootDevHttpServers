@@ -1,8 +1,9 @@
 import { db } from "../index.js";
 import { chirps } from "../schema.js";
-import type { NewChirp } from "../schema.js";
+import type { NewChirp, SelectChirp } from "../schema.js";
 import { config } from "../../config.js";
 import { ForbiddenError } from "../../middleware/error_handling.js";
+import { eq } from "drizzle-orm";
 
 export async function createChirp(chirp: NewChirp) {
   console.log(`Body: ${chirp.body}\n${chirp.userId}`);
@@ -21,6 +22,11 @@ export async function createChirp(chirp: NewChirp) {
     console.log(errMsg);
     throw new Error(errMsg);
   }
+}
+
+export async function getChirpFromId(chirpID: string) {
+  const [result] = await db.select().from(chirps).where(eq(chirps.id, chirpID));
+  return result;
 }
 
 export async function getAllChirps() {

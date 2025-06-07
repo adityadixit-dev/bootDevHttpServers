@@ -18,6 +18,7 @@ import { config } from "./config.js";
 import { handlerCreateUser } from "./api/users/create_user.js";
 import { handlerCreateChirp } from "./api/chirps/create_chirp.js";
 import { handlerGetAllChirps } from "./api/chirps/get_all_chirps.js";
+import { handlerGetChirpFromId } from "./api/chirps/get_chirp_from_id.js";
 
 const migrationClient = postgres(config.db.dbURL, { max: 1 });
 await migrate(drizzle(migrationClient), config.db.migrationConfig);
@@ -34,6 +35,7 @@ app.get("/api/healthz", errWrapper(handlerReadiness));
 app.post("/api/users", errWrapper(handlerCreateUser));
 app.post("/api/chirps", errWrapper(handlerCreateChirp));
 app.get("/api/chirps", errWrapper(handlerGetAllChirps));
+app.get("/api/chirps/:chirpID", errWrapper(handlerGetChirpFromId));
 
 app.get("/admin/metrics", errWrapper(handlerHits));
 app.post("/admin/reset", errWrapper(handlerReset));
