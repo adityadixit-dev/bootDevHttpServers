@@ -41,7 +41,7 @@ export async function handlerLoginUser(req: Request, res: Response) {
     updatedAt: user.updatedAt,
     email: user.email,
     token: jwtAccessToken,
-    refreshToken: refreshToken,
+    refreshToken: refreshToken.token,
   });
 }
 

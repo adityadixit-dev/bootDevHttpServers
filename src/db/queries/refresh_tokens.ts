@@ -39,3 +39,18 @@ export async function getUserIdFromRefreshToken(inputToken: string): Promise<str
     );
   return result.userId ?? "";
 }
+
+export async function revokeRefreshToken(inputToken: string): Promise<boolean> {
+  const [result] = await db
+    .update(refreshTokens)
+    .set({
+      revokedAt: new Date(),
+    })
+    .where(eq(refreshTokens.token, inputToken))
+    .returning();
+
+  if (result) {
+    return true;
+  }
+  return false;
+}

@@ -9,13 +9,18 @@ import { respondWithJSON } from "../../utils/json_resp.js";
 export async function handlerRefresh(req: Request, res: Response) {
   //
   const bearerToken = getBearerToken(req);
-  const userId = await getUserIdFromRefreshToken(bearerToken);
-  if (!userId) {
+
+  try {
+    const userId = await getUserIdFromRefreshToken(bearerToken);
+    if (!userId) {
+      throw new UnauthorizedError("Invalid or Expired Token");
+    }
+
+    const newAccessToken = makeJWT(userId, config.defaults.maxJwtExpiry, config.api.jwtSecret);
+    respondWithJSON(res, 200, {
+      token: newAccessToken,
+    });
+  } catch (err) {
     throw new UnauthorizedError("Invalid or Expired Token");
   }
-
-  const newAccessToken = makeJWT(userId, config.defaults.maxJwtExpiry, config.api.jwtSecret);
-  respondWithJSON(res, 200, {
-    token: newAccessToken,
-  });
 }
