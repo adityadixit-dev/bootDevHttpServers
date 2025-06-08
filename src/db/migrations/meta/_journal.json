@@ -36,6 +36,13 @@
       "when": 1749380801195,
       "tag": "0004_rare_tinkerer",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1749398286985,
+      "tag": "0005_soft_sir_ram",
+      "breakpoints": true
     }
   ]
 }

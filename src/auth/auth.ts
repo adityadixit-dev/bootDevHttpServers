@@ -43,3 +43,20 @@ function getTokenFromHeader(authHeader: string | undefined): string {
 
   return authSplit[1];
 }
+
+export function getAPIKey(req: Request): string {
+  const authHeader = req.headers?.authorization;
+
+  if (!authHeader) {
+    throw new UnauthorizedError("Missing Authorization Headers");
+  }
+
+  const authSplit = authHeader.split(" ");
+  if (authSplit.length !== 2 || authSplit[0].toLowerCase() !== "apikey" || !authSplit[1]) {
+    throw new UnauthorizedError("Invalid Authorization Header format");
+  }
+
+  const authApiKey = authSplit[1];
+
+  return authApiKey;
+}

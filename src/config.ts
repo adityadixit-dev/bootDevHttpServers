@@ -17,6 +17,7 @@ type APIConfig = {
   port: number;
   platform: "dev" | "prod";
   jwtSecret: string;
+  polkaKey: string;
 };
 
 type DBConfig = {
@@ -34,6 +35,7 @@ export const config: Config = {
     port: Number(envOrThrow("PORT")),
     platform: devProdOrThrow("PLATFORM"),
     jwtSecret: envOrThrow("JWT_SECRET"),
+    polkaKey: envOrThrow("POLKA_KEY"),
   },
   db: {
     dbURL: envOrThrow("DB_URL"),

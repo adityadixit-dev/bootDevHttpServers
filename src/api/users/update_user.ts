@@ -24,6 +24,7 @@ export async function handlerUpdateUser(req: Request, res: Response) {
         createdAt: result.createdAt,
         updatedAt: result.updatedAt,
         email: result.email,
+        isChirpyRed: result.isChirpyRed,
       });
       return;
     }

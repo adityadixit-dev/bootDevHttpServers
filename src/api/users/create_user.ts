@@ -31,6 +31,7 @@ export async function handlerCreateUser(req: Request, res: Response) {
       createdAt: result.createdAt,
       updatedAt: result.updatedAt,
       email: result.email,
+      isChirpyRed: result.isChirpyRed,
     });
   } catch (err) {
     const errMesg = `Error creating New user: ${(err as Error).message}`;

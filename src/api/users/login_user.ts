@@ -42,6 +42,7 @@ export async function handlerLoginUser(req: Request, res: Response) {
     email: user.email,
     token: jwtAccessToken,
     refreshToken: refreshToken.token,
+    isChirpyRed: user.isChirpyRed,
   });
 }
 
