@@ -3,15 +3,18 @@ import { BadRequestError, UnauthorizedError } from "../../middleware/error_handl
 import { getHashedPwdFromEmail, getUserFromEmail } from "../../db/queries/users.js";
 import { checkPasswordHash } from "../../auth/auth.js";
 import { respondWithJSON } from "../../utils/json_resp.js";
+import { config } from "../../config.js";
+import { makeJWT } from "../../auth/jwt.js";
 
 type LoginUserParams = {
   email: string;
   password: string;
+  expiresInSeconds?: number;
 };
 
 export async function handlerLoginUser(req: Request, res: Response) {
-  //
   const loginUserParams: LoginUserParams = req.body;
+
   if (!isValidLoginUserParams(loginUserParams)) {
     throw new BadRequestError("Invalid login parameters");
   }
@@ -27,11 +30,18 @@ export async function handlerLoginUser(req: Request, res: Response) {
     throw new UnauthorizedError("Incorrect Email or Password");
   }
 
+  const expInSecs = loginUserParams.expiresInSeconds
+    ? Math.min(loginUserParams.expiresInSeconds, config.defaults.maxJwtExpiry)
+    : config.defaults.maxJwtExpiry;
+
+  const token = makeJWT(user.id, expInSecs, config.api.jwtSecret);
+
   respondWithJSON(res, 200, {
     id: user.id,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
     email: user.email,
+    token: token,
   });
 }
 

@@ -1,16 +1,27 @@
 import { Request, Response } from "express";
-import { BadRequestError } from "../../middleware/error_handling.js";
+import { BadRequestError, UnauthorizedError } from "../../middleware/error_handling.js";
 import { createChirp } from "../../db/queries/chirps.js";
 import { respondWithJSON } from "../../utils/json_resp.js";
+import { getBearerToken } from "../../auth/auth.js";
+import { validateJWT } from "../../auth/jwt.js";
+import { config } from "../../config.js";
 
 const MAX_CHIRP_LENGTH = 140;
 
 type ChirpRequest = {
   body: string;
-  userId: string;
 };
 
 export async function handlerCreateChirp(req: Request, res: Response) {
+  let userID: string;
+
+  try {
+    const bearerToken = getBearerToken(req);
+    userID = validateJWT(bearerToken, config.api.jwtSecret);
+  } catch (err) {
+    throw new UnauthorizedError("Invalid or missing Token");
+  }
+
   const chirpRequest: ChirpRequest = req.body;
   if (!isChirpRequestValid(chirpRequest)) {
     throw new BadRequestError("Incomplete or Invalid Request");
@@ -26,7 +37,7 @@ export async function handlerCreateChirp(req: Request, res: Response) {
 
   const result = await createChirp({
     body: cleanedBody,
-    userId: chirpRequest.userId,
+    userId: userID,
   });
 
   if (result) {
@@ -56,7 +67,7 @@ function cleanInputBody(bodyStr: string) {
 }
 
 function isChirpRequestValid(chirpRequest: ChirpRequest) {
-  if (!chirpRequest.body || !chirpRequest.userId) {
+  if (!chirpRequest.body) {
     return false;
   }
   return true;

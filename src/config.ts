@@ -4,12 +4,18 @@ import type { MigrationConfig } from "drizzle-orm/migrator";
 type Config = {
   api: APIConfig;
   db: DBConfig;
+  defaults: DefaultValuesConfig;
+};
+
+type DefaultValuesConfig = {
+  maxJwtExpiry: number;
 };
 
 type APIConfig = {
   fileserverHits: number;
   port: number;
   platform: "dev" | "prod";
+  jwtSecret: string;
 };
 
 type DBConfig = {
@@ -26,10 +32,14 @@ export const config: Config = {
     fileserverHits: 0,
     port: Number(envOrThrow("PORT")),
     platform: devProdOrThrow("PLATFORM"),
+    jwtSecret: envOrThrow("JWT_SECRET"),
   },
   db: {
     dbURL: envOrThrow("DB_URL"),
     migrationConfig: migrationConfig,
+  },
+  defaults: {
+    maxJwtExpiry: 3600,
   },
 };
 

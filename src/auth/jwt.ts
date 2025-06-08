@@ -1,5 +1,5 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { UnauthorizedError } from "../middleware/error_handling";
+import { UnauthorizedError } from "../middleware/error_handling.js";
 
 type Payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
 

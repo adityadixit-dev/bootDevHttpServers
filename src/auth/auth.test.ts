@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import { hashPassword, checkPasswordHash } from "./auth";
+import { hashPassword, checkPasswordHash, getBearerToken } from "./auth";
+import { Request } from "express";
+import { UnauthorizedError } from "../middleware/error_handling";
 
 describe("Check Password Hashing", () => {
   const password1 = "correctPassword";
@@ -25,5 +27,24 @@ describe("Check Password Hashing", () => {
   it("Should return false for incorrect hash", async () => {
     const result = await checkPasswordHash(password1, hash2);
     expect(result).toBe(false);
+  });
+});
+
+describe("Check Retrieval of Token from Request Headers", () => {
+  const req = {
+    headers: {
+      authorization: "Bearer SomeRandomTokenString",
+    },
+  } as Request;
+
+  const badReq = {} as Request;
+
+  it("Should return token - SomeRandomTokenString", () => {
+    const resultToken = getBearerToken(req);
+    expect(resultToken).toBe("SomeRandomTokenString");
+  });
+
+  it("Should throw an Unauthorized error", () => {
+    expect(() => getBearerToken(badReq)).toThrow(UnauthorizedError);
   });
 });
