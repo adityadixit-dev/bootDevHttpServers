@@ -9,6 +9,7 @@ type Config = {
 
 type DefaultValuesConfig = {
   maxJwtExpiry: number;
+  maxRefreshExpiryInSeconds: number;
 };
 
 type APIConfig = {
@@ -39,7 +40,8 @@ export const config: Config = {
     migrationConfig: migrationConfig,
   },
   defaults: {
-    maxJwtExpiry: 3600,
+    maxJwtExpiry: 3600, // 1 hour =  3600 seconds
+    maxRefreshExpiryInSeconds: 60 * 24 * 60 * 60,
   },
 };
 

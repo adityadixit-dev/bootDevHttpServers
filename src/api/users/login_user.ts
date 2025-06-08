@@ -5,11 +5,11 @@ import { checkPasswordHash } from "../../auth/auth.js";
 import { respondWithJSON } from "../../utils/json_resp.js";
 import { config } from "../../config.js";
 import { makeJWT } from "../../auth/jwt.js";
+import { createRefreshTokenFromUserId } from "../../db/queries/refresh_tokens.js";
 
 type LoginUserParams = {
   email: string;
   password: string;
-  expiresInSeconds?: number;
 };
 
 export async function handlerLoginUser(req: Request, res: Response) {
@@ -30,18 +30,18 @@ export async function handlerLoginUser(req: Request, res: Response) {
     throw new UnauthorizedError("Incorrect Email or Password");
   }
 
-  const expInSecs = loginUserParams.expiresInSeconds
-    ? Math.min(loginUserParams.expiresInSeconds, config.defaults.maxJwtExpiry)
-    : config.defaults.maxJwtExpiry;
+  const expInSecs = config.defaults.maxJwtExpiry;
 
-  const token = makeJWT(user.id, expInSecs, config.api.jwtSecret);
+  const jwtAccessToken = makeJWT(user.id, expInSecs, config.api.jwtSecret);
+  const refreshToken = await createRefreshTokenFromUserId(user.id);
 
   respondWithJSON(res, 200, {
     id: user.id,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
     email: user.email,
-    token: token,
+    token: jwtAccessToken,
+    refreshToken: refreshToken,
   });
 }
 

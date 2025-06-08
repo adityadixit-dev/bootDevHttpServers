@@ -22,6 +22,20 @@
       "when": 1749295956188,
       "tag": "0002_eager_mercury",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1749374566888,
+      "tag": "0003_burly_amphibian",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1749380801195,
+      "tag": "0004_rare_tinkerer",
+      "breakpoints": true
     }
   ]
 }
