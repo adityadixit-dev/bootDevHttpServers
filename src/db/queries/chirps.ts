@@ -3,7 +3,7 @@ import { chirps } from "../schema.js";
 import type { NewChirp, SelectChirp } from "../schema.js";
 import { config } from "../../config.js";
 import { ForbiddenError } from "../../middleware/error_handling.js";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 export async function createChirp(chirp: NewChirp) {
   console.log(`Body: ${chirp.body}\n${chirp.userId}`);
@@ -34,10 +34,22 @@ export async function deleteChirpWithId(chirpId: string) {
   return result;
 }
 
-export async function getAllChirps() {
+export async function getAllChirps(authorId = "", sortAsc = true) {
   try {
-    const results = await db.select().from(chirps).orderBy(chirps.createdAt);
-    return results;
+    if (authorId === "") {
+      const results = await db
+        .select()
+        .from(chirps)
+        .orderBy(sortAsc ? chirps.createdAt : desc(chirps.createdAt));
+      return results;
+    } else {
+      const results = await db
+        .select()
+        .from(chirps)
+        .where(eq(chirps.userId, authorId))
+        .orderBy(sortAsc ? chirps.createdAt : desc(chirps.createdAt));
+      return results;
+    }
   } catch (err) {
     const errMsg = `Error Getting All Chirps: ${(err as Error).message}`;
     console.log(errMsg);
